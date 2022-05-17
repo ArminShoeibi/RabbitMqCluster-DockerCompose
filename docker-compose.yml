@@ -1,0 +1,60 @@
+networks:
+  Rabbits-Network:
+    driver: bridge
+
+services:
+################################################## RabbitMQ Node 1 ##################################################
+  RabbitMq1Service:
+    image: rabbitmq:3.10.1-management
+    restart: on-failure
+    container_name: RabbitMq1Container
+    hostname: RabbitMq1Host
+    ports:
+      - 5672:5672
+      - 15672:15672
+    environment:
+      - RABBITMQ_ERLANG_COOKIE=Ra1234567890
+    networks:
+      - Rabbits-Network
+    volumes:
+      - type: bind
+        source: ./10-defaults.conf
+        target: /etc/rabbitmq/conf.d/10-defaults.conf
+################################################## RabbitMQ Node 2 ##################################################    
+  RabbitMq2Service:
+    image: rabbitmq:3.10.1-management
+    restart: on-failure
+    container_name: RabbitMq2Container
+    hostname: RabbitMq2Host
+    ports:
+      - 5673:5672
+      - 15673:15672
+    environment:
+      - RABBITMQ_ERLANG_COOKIE=Ra1234567890
+    networks:
+      - Rabbits-Network
+    depends_on:
+      - RabbitMq1Service
+    volumes:
+      - type: bind
+        source: ./10-defaults.conf
+        target: /etc/rabbitmq/conf.d/10-defaults.conf
+################################################## RabbitMQ Node 3 ##################################################
+  RabbitMq3Service:
+    image: rabbitmq:3.10.1-management
+    restart: on-failure
+    container_name: RabbitMq3Container
+    hostname: RabbitMq3Host
+    ports:
+      - 5674:5672
+      - 15674:15672
+    environment:
+      - RABBITMQ_ERLANG_COOKIE=Ra1234567890
+    networks:
+      - Rabbits-Network
+    depends_on:
+      - RabbitMq1Service
+    volumes:
+      - type: bind
+        source: ./10-defaults.conf
+        target: /etc/rabbitmq/conf.d/10-defaults.conf
